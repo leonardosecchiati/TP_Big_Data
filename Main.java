@@ -21,17 +21,19 @@ public class Main {
             System.out.println("Connexion réussie à PostgreSQL !");
 
             // Exécuter une requête SQL
-            String sql = "SELECT * FROM department";
+            // Exécuter une requête SQL avec la localisation
+            String sql = "SELECT deptNo, dname, location FROM department";
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
 
-            // Afficher les résultats
+            // Affichage des résultats avec la localisation
             while (resultSet.next()) {
                 int id = resultSet.getInt("deptNo");
                 String name = resultSet.getString("dname");
                 String location = resultSet.getString("location");
                 System.out.println("ID: " + id + " | Nom: " + name + " | Lieu: " + location);
             }
+
 
             // Fermer les ressources
             resultSet.close();
