@@ -12,39 +12,22 @@ public class Main {
         String password = "Volerovia13"; // Ton mot de passe PostgreSQL
 
         // Connexion à la base de données
-        try {
-            // Charger explicitement le driver PostgreSQL
-            Class.forName("org.postgresql.Driver");
+        try (Connection connection = DriverManager.getConnection(url, user, password)) {
+            System.out.println("✅ Connexion réussie à PostgreSQL !");
 
-            // Connexion à la base de données
-            Connection connection = DriverManager.getConnection(url, user, password);
-            System.out.println("Connexion réussie à PostgreSQL !");
+            // 🔹 Création de l'objet DAO pour les employés
+            EmpDAO empDAO = new EmpDAO(connection);
 
-            // Exécuter une requête SQL
-            // Exécuter une requête SQL avec la localisation
-            String sql = "SELECT deptNo, dname, location FROM department";
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
-
-            // Affichage des résultats avec la localisation
-            while (resultSet.next()) {
-                int id = resultSet.getInt("deptNo");
-                String name = resultSet.getString("dname");
-                String location = resultSet.getString("location");
-                System.out.println("ID: " + id + " | Nom: " + name + " | Lieu: " + location);
+            // 🔹 Tester moveDepartment() : Déplacer l'employé 7839 vers le département 20
+            boolean moved = empDAO.moveDepartment(7839, 20);
+            if (moved) {
+                System.out.println("✅ Employé déplacé avec succès !");
+            } else {
+                System.out.println("❌ Échec du déplacement de l'employé !");
             }
 
-
-            // Fermer les ressources
-            resultSet.close();
-            statement.close();
-            connection.close();
-            
-        } catch (ClassNotFoundException e) {
-            System.out.println("Driver PostgreSQL non trouvé !");
-            e.printStackTrace();
         } catch (SQLException e) {
-            System.out.println("Erreur SQL !");
+            System.out.println("❌ Erreur SQL !");
             e.printStackTrace();
         }
     }
